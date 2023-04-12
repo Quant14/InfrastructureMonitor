@@ -28,4 +28,9 @@ public class MonitorController {
     public List<Machine> getMachines() {
         return service.getMachines();
     }
+
+    @RequestMapping(value = "/update", method = RequestMethod.PUT)
+    public int updateMachine(@RequestBody Machine machine){
+        return service.updateMachine(machine);
+    }
 }
