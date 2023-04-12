@@ -14,13 +14,13 @@ public class Machine {
     private String name;
 
     @Column(name = "cpu_usage")
-    private int cpuUsage;
+    private float cpuUsage;
 
     @Column(name = "ram_usage")
-    private int ramUsage;
+    private float ramUsage;
 
     @Column(name = "disk_usage")
-    private int diskUsage;
+    private float diskUsage;
 
     public Machine(String name) {
         this.name = name;
@@ -33,27 +33,27 @@ public class Machine {
         return name;
     }
 
-    public int getCpuUsage() {
+    public float getCpuUsage() {
         return cpuUsage;
     }
 
-    public int getRamUsage() {
+    public float getRamUsage() {
         return ramUsage;
     }
 
-    public int getDiskUsage() {
+    public float getDiskUsage() {
         return diskUsage;
     }
 
-    public void setCpuUsage(int cpuUsage) {
+    public void setCpuUsage(float cpuUsage) {
         this.cpuUsage = cpuUsage;
     }
 
-    public void setRamUsage(int ramUsage) {
+    public void setRamUsage(float ramUsage) {
         this.ramUsage = ramUsage;
     }
 
-    public void setDiskUsage(int diskUsage) {
+    public void setDiskUsage(float diskUsage) {
         this.diskUsage = diskUsage;
     }
 }

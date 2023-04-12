@@ -5,8 +5,8 @@ USE monitorDB;
 
 CREATE TABLE machine (
     id int PRIMARY KEY AUTO_INCREMENT,
-    name varchar(20) NOT NULL,
-    cpu_usage int,
-    ram_usage int,
-    disk_usage int
+    name varchar(50) NOT NULL,
+    cpu_usage float,
+    ram_usage float,
+    disk_usage float
 );
