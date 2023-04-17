@@ -1,6 +1,8 @@
 import json
 import os as os
 
+ip = {1: "25.24.74.142", 2: ""}
+
 
 def init_machine():
     initialise = {

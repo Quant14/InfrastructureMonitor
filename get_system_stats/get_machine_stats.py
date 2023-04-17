@@ -10,7 +10,7 @@ def get_machine_stats(name):
         set_name = name
     stats = {
         # name of the machine
-        "name": name,
+        "name": set_name,
         # get cpu usage average for 5 sec and return in percentage
         "cpuUsage": psutil.cpu_percent(5),
         # get RAM usage and return percentage of used RAM
@@ -18,6 +18,4 @@ def get_machine_stats(name):
         # get disk usage of / directory and return in used percentage
         "diskUsage": psutil.disk_usage('/')[3]
     }
-
-    send_system_stats = json.dumps(stats)
-    return send_system_stats
+    return stats
