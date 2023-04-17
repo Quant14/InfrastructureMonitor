@@ -6,10 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @ResponseBody
@@ -21,9 +19,17 @@ public class MonitorController {
     @Value("${servers.list}")
     private String[] servers;
 
+    private boolean isMaster = false;
+
+    @RequestMapping(value = "/switch-master", method = RequestMethod.POST)
+    public int switchMaster() {
+        isMaster = true;
+        return 0;
+    }
+
     @RequestMapping(value = "/connect" , method = RequestMethod.POST)
     public void connectMachines(@RequestParam(value="name") String name){
-        if (service.connectMachine(name) == 0) {
+        if (service.connectMachine(name) == 0 && isMaster) {
             LinkedList<RequestThread> threads = new LinkedList<>();
 
             for (String server : servers) {
@@ -34,17 +40,15 @@ public class MonitorController {
     }
 
     @RequestMapping(value = "/disconnect" , method = RequestMethod.DELETE)
-    public int disconnectMachine(@RequestParam(value="mainServerName") String mainServerName,
-                               @RequestParam(value="backUpNames") List<String> backUpNames) {
-        Map<String, Object> backUpStatuses = new HashMap<>();
+    public void disconnectMachine(@RequestParam(value="name") String name) {
+        if (service.disconnectMachine(name) == 0 && isMaster) {
+            LinkedList<RequestThread> threads = new LinkedList<>();
 
-        // Execute the disconnectMachine method for all backup server names sequentially
-        for (String name : backUpNames) {
-            int machineResult = service.disconnectMachine(name);
-            backUpStatuses.put(name, machineResult);
+            for (String server : servers) {
+                threads.add(new RequestThread("text/plain", "", "http://" + server + "/api/disconnect?name=" + name, "DELETE"));
+            }
+            service.handleThreads(threads);
         }
-
-        return service.disconnectMachine(mainServerName);
     }
 
     @RequestMapping(value = "/get", method = RequestMethod.GET)
@@ -52,10 +56,17 @@ public class MonitorController {
         return service.getMachines();
     }
 
-
     @RequestMapping(value = "/update", method = RequestMethod.PUT)
-    public int updateMachine(@RequestBody Machine machine){
-        return service.updateMachine(machine);
+    public void updateMachine(@RequestBody Machine machine){
+        if (service.updateMachine(machine) == 0 && isMaster) {
+            LinkedList<RequestThread> threads = new LinkedList<>();
+
+            for (String server : servers) {
+                threads.add(new RequestThread("application/json",
+                        "{\n \"name\": \"" + machine.getName() + "\",\n \"cpuUsage\": \"" + machine.getCpuUsage() + "\",\n \"ramUsage\": \"" + machine.getRamUsage() + "\",\n \"diskUsage\": \"" + machine.getDiskUsage() + "\"\n}", "http://" + server + "/api/update", "PUT"));
+            }
+            service.handleThreads(threads);
+        }
     }
 
 }

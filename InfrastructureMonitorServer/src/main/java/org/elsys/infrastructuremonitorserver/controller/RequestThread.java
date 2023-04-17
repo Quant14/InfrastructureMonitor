@@ -25,6 +25,7 @@ public class RequestThread extends Thread {
         Request request = new Request.Builder()
                 .url(this.url)
                 .method(this.method, body)
+                .addHeader("Content-Type", "application/json")
                 .build();
         try {
             Response response = client.newCall(request).execute();
