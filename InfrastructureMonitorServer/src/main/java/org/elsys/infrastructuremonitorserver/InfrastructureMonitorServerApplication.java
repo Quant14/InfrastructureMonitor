@@ -9,5 +9,4 @@ public class InfrastructureMonitorServerApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(InfrastructureMonitorServerApplication.class, args);
 	}
-
 }
