@@ -53,6 +53,7 @@ def make_request(ip_key, name):
         print("Error!", exception)
     except KeyboardInterrupt:
         print("Program has been canceled.")
+        disconnect_machine()
         exit(10)
 
 
