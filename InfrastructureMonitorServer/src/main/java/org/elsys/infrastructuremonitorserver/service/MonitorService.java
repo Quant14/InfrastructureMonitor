@@ -33,14 +33,15 @@ public class MonitorService {
 
     public int updateMachine(Machine machine) {
         Machine updated = findByName(machine.getName());
-        if (updated != null) {
-            updated.setCpuUsage(machine.getCpuUsage());
-            updated.setRamUsage(machine.getRamUsage());
-            updated.setDiskUsage(machine.getDiskUsage());
-            repository.save(updated);
-            return 0;
+        if (updated == null) {
+            updated = new Machine(machine.getName());
         }
-        return 1;
+        updated.setCpuUsage(machine.getCpuUsage());
+        updated.setRamUsage(machine.getRamUsage());
+        updated.setDiskUsage(machine.getDiskUsage());
+        repository.save(updated);
+
+        return 0;
     }
 
     public int disconnectMachine(String name) {

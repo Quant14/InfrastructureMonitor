@@ -68,5 +68,4 @@ public class MonitorController {
             service.handleThreads(threads);
         }
     }
-
 }
