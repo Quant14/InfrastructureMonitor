@@ -10,5 +10,14 @@ def init_machine():
     return send_name
 
 
-get_name = init_machine()
-print(get_name)
+def get_name():
+    while True:
+        answer = int(input("1. Insert name for your machine\n2. Use your machine's default name\n"))
+        if answer == 1:
+            name = input("Enter the name for your machine:\n")
+            return name
+        elif answer == 2:
+            return None
+        else:
+            print("Wrong input! Please select an option:\n")
+            continue
