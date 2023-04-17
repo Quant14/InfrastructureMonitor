@@ -1,11 +1,13 @@
-import org.elsys.InfrastructureMonitorServer.Model.Machine;
-import org.elsys.InfrastructureMonitorServer.Service.MonitorService;
+package org.elsys.infrastructuremonitorserver.controller;
+
+import org.elsys.infrastructuremonitorserver.model.Machine;
+import org.elsys.infrastructuremonitorserver.service.MonitorService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 
-import java.security.Provider;
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -15,18 +17,20 @@ import java.util.Map;
 public class MonitorController {
     @Autowired
     MonitorService service;
+
+    @Value("${servers.list}")
+    private String[] servers;
+
     @RequestMapping(value = "/connect" , method = RequestMethod.POST)
-    public int connectMachines(@RequestParam(value="mainServerName") String mainServerName,
-                                               @RequestParam(value="backUpNames") List<String> backUpNames){
-        Map<String, Object> backUpStatuses = new HashMap<>();
+    public void connectMachines(@RequestParam(value="name") String name){
+        if (service.connectMachine(name) == 0) {
+            LinkedList<RequestThread> threads = new LinkedList<>();
 
-        // Execute the connectMachine method for all backup server names sequentially
-        for (String name : backUpNames) {
-            int machineResult = service.connectMachine(name);
-            backUpStatuses.put(name, machineResult);
+            for (String server : servers) {
+                threads.add(new RequestThread("text/plain", "", "http://" + server + "/api/connect?name=" + name, "POST"));
+            }
+            service.handleThreads(threads);
         }
-
-        return service.connectMachine(mainServerName);
     }
 
     @RequestMapping(value = "/disconnect" , method = RequestMethod.DELETE)

@@ -1,10 +1,12 @@
 package org.elsys.infrastructuremonitorserver.service;
 
+import org.elsys.infrastructuremonitorserver.controller.RequestThread;
 import org.elsys.infrastructuremonitorserver.model.Machine;
 import org.elsys.infrastructuremonitorserver.repository.MonitorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.LinkedList;
 import java.util.List;
 
 @Service
@@ -52,5 +54,16 @@ public class MonitorService {
 
     public List<Machine> getMachines() {
         return repository.findAll();
+    }
+
+    public void handleThreads(LinkedList<RequestThread> threads) {
+        for (RequestThread thread : threads) {
+            thread.start();
+            try {
+                thread.join(10000);
+            } catch (InterruptedException e) {
+                System.out.println("Request to url failed:" + thread.getUrl());
+            }
+        }
     }
 }
